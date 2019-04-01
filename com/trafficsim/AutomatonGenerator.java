@@ -54,13 +54,13 @@ public class AutomatonGenerator {
         HashMap<String, Automaton> automs = new HashMap<>();
 
         // moves right, down
-        automs.put("A_0", new Automaton("A_0",10,10,400,100,15,15, 5, toRadians(45),0, 0, env));
-        // right, up
-        automs.put("A_1", new Automaton("A_1",10,500,400,200,15,15,5, toRadians(315),0, 0,env));
-        // left, down
-        automs.put("A_2", new Automaton("A_2",500,20,30,200,15,15, 5, toRadians(135),0, 0,env));
-        // left, up
-        automs.put("A_3", new Automaton("A_3",700,700,400,500,15,15, 5, toRadians(225),0, 0,env));
+        automs.put("A_0", new Automaton("A_0",10,10,400,100,2.5,2.5, 5, toRadians(45),0, 0, env));
+//        // right, up
+//        automs.put("A_1", new Automaton("A_1",10,500,400,200,2.5,2.5,5, toRadians(315),0, 0,env));
+//        // left, down
+//        automs.put("A_2", new Automaton("A_2",500,20,30,200,2.5,2.5, 5, toRadians(135),0, 0,env));
+//        // left, up
+//        automs.put("A_3", new Automaton("A_3",700,700,400,500,2.5,2.5, 5, toRadians(225),0, 0,env));
         return automs;
     }
 

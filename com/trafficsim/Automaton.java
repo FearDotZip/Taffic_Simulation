@@ -1,8 +1,9 @@
 package com.trafficsim;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import static java.lang.Math.round;
+import java.util.HashMap;
+import java.awt.geom.Point2D;
+
+import static com.trafficsim.devtools.toInt;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.hypot;
@@ -10,7 +11,6 @@ import static java.lang.Math.hypot;
 public class Automaton extends Thing{
     private String name;
     private Environment env;
-    private Graphics2D g2d; //todo ask reddit why it works for multiple threads to have a ref to env's graphics object and be using it at the same time.
     private String report;
     private double xf, yf, distToDestination, initialDistance;
 
@@ -19,7 +19,6 @@ public class Automaton extends Thing{
         super(x0,y0,width,height,velocity,theta,accel,accelTheta);
         this.name = name;
         this.env = env;
-        this.g2d = (Graphics2D) env.getGraphics();
         this.xf = xf;
         this.yf = yf;
         this.initialDistance = hypot(xf-x, yf-y);
@@ -36,12 +35,16 @@ public class Automaton extends Thing{
 
 
     void brain(){
-
         int brainIterations = 0;
         while(!atDestination()) {
-            brainIterations++;
             env.sleep(60);
-            getTrajectory(30, .5);
+            if (brainIterations % 20 == 0) {
+                trajectory = getTrajectory(3000);
+            }
+            var point = trajectory.get(env.getEnvTime());
+            x = point.x;
+            y = point.y;
+            brainIterations++;
         }
         System.out.println(name + " Finished\n");
     }
@@ -52,12 +55,24 @@ public class Automaton extends Thing{
         return false;
     }
 
+    @Override
+    public HashMap<Long, Point2D.Double> getTrajectory(double timeSpanSeconds) {
+        HashMap<Long, Point2D.Double> newTrajectory = new HashMap<>();
 
+
+        double time = env.getEnvTime() / 1000.0;
+        double increment = env.getENV_TIME_INCREMENT() / 1000.0;
+        for(double t = time; t <= time + timeSpanSeconds / 1000.0; t += increment){
+            double newx = x0 + (vx * t) + (.5 * ax * pow(t,2));
+            double newy = y0 + (vy * t) + (.5 * ay * pow(t,2));
+            newTrajectory.put(Long.valueOf(toInt(t*1000)), new Point2D.Double(newx, newy));
+        }
+        return newTrajectory;
+    }
 
 /////MEMBER_GETTERS////////////////////////////////////////////////////////////////////////////////////////////////////
     public String getName()             { return name; }
     public Environment getEnv()         { return env; }
-    public Graphics2D getd2d()          { return g2d; }
     public double getXf()               { return xf; }
     public double getYf()               { return yf; }
     public double getDistToDestination(){ return distToDestination; }
