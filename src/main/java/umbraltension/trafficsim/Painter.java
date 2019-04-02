@@ -1,4 +1,4 @@
-package src.main.java;
+package umbraltension.trafficsim;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.ImageIcon;
 
-import static src.main.java.devtools.toInt;
+import static umbraltension.trafficsim.devtools.toInt;
 
 public class Painter extends Thread {
 

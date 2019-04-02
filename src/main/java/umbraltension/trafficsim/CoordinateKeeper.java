@@ -1,4 +1,4 @@
-package src.main.java;
+package umbraltension.trafficsim;
 
 
 import java.awt.*;

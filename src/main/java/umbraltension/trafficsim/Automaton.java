@@ -1,9 +1,9 @@
-package src.main.java;
+package umbraltension.trafficsim;
 
 import java.util.HashMap;
 import java.awt.geom.Point2D;
 
-import static src.main.java.devtools.toInt;
+import static umbraltension.trafficsim.devtools.toInt;
 import static java.lang.Math.pow;
 import static java.lang.Math.hypot;
 

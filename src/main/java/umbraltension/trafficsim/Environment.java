@@ -1,4 +1,4 @@
-package src.main.java;
+package umbraltension.trafficsim;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static src.main.java.devtools.toInt;
+import static umbraltension.trafficsim.devtools.toInt;
 public class Environment extends javax.swing.JPanel {
 	// Time
         public final int REAL_W_TIME_INCREMENT; // (real-world update period given in milliseconds)
