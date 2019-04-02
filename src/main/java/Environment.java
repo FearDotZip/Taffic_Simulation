@@ -1,4 +1,4 @@
-package com.trafficsim;
+package src.main.java;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.trafficsim.devtools.toInt;
+import static src.main.java.devtools.toInt;
 public class Environment extends javax.swing.JPanel {
 	// Time
         public final int REAL_W_TIME_INCREMENT; // (real-world update period given in milliseconds)

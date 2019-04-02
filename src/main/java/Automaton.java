@@ -1,11 +1,10 @@
-package com.trafficsim;
+package src.main.java;
 
 import java.util.HashMap;
 import java.awt.geom.Point2D;
 
-import static com.trafficsim.devtools.toInt;
+import static src.main.java.devtools.toInt;
 import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 import static java.lang.Math.hypot;
 
 public class Automaton extends Thing{

@@ -1,4 +1,4 @@
-package com.trafficsim;
+package src.main.java;
 
 
 import java.awt.*;

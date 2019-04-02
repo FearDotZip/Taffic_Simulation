@@ -1,10 +1,9 @@
-package com.trafficsim;
+package src.main.java;
 
 
 import java.util.Random;
 import java.util.HashMap;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.toRadians;
 
 public class AutomatonGenerator {

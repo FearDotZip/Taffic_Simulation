@@ -1,24 +1,22 @@
-package com.trafficsim;
+package src.main.java;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.ImageIcon;
 
-import static com.trafficsim.devtools.toInt;
+import static src.main.java.devtools.toInt;
 
 public class Painter extends Thread {
 
     private Environment env;
     private Graphics2D g2d;
     private ArrayList<Item> items = new ArrayList<>();
-    private Map<String, String> iconPaths = Map.of("Automaton", "com/trafficsim/Automaton.png", "Default", "com/trafficsim/Default.png");
+    private Map<String, String> iconPaths = Map.of("Automaton", "src/main/resources/Automaton.png", "Default", "src/main/resources/Default.png");
 
     public Painter(String name, Environment env) {
         super.setName(name);

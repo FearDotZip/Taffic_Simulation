@@ -1,4 +1,4 @@
-package com.trafficsim;
+package src.main.java;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
