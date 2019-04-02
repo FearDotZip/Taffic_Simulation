@@ -16,7 +16,7 @@ public class Painter extends Thread {
     private Environment env;
     private Graphics2D g2d;
     private ArrayList<Item> items = new ArrayList<>();
-    private Map<String, String> iconPaths = Map.of("Automaton", "src/main/resources/Automaton.png", "Default", "src/main/resources/Default.png");
+    private Map<String, String> iconPaths = Map.of("Automaton", "src/main/resources/sprite images/Automaton.png", "Default", "src/main/resources/sprite images/Default.png");
 
     public Painter(String name, Environment env) {
         super.setName(name);

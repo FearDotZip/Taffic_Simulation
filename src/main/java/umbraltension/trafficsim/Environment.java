@@ -8,13 +8,14 @@ import java.util.HashMap;
 
 import static umbraltension.trafficsim.devtools.toInt;
 public class Environment extends javax.swing.JPanel {
+    private Settings set;
 	// Time
         public final int REAL_W_TIME_INCREMENT; // (real-world update period given in milliseconds)
         public final int ENV_TIME_INCREMENT; // (milliseconds)
         public long envTime = 0; // (milliseconds since env's clock thread started creation)
         private Thread clock;
     // Space
-        public final double MAP_SIZE_METERS, METERS_PER_PIXEL, FT_PER_MILE=5280;
+        public final double MAP_SIZE_METERS, METERS_PER_PIXEL;
     private HashMap<String,Automaton> automs = new HashMap<>();
     private ArrayList<Painter> painters = new ArrayList<>();
     private ThreadGroup automThreads = new ThreadGroup("Automaton Threads");
@@ -29,21 +30,21 @@ public class Environment extends javax.swing.JPanel {
         }
     }
 
-     Environment(int jPanelSize, int MAP_SIZE_METERS, int REAL_W_TIME_INCREMENT, double ENV_TO_REALWORLD_TIME_RATIO){
-        METERS_PER_PIXEL = (double) MAP_SIZE_METERS / jPanelSize;
-        this.REAL_W_TIME_INCREMENT = REAL_W_TIME_INCREMENT;
-        this.MAP_SIZE_METERS = MAP_SIZE_METERS;
-        this.ENV_TIME_INCREMENT = toInt(REAL_W_TIME_INCREMENT * ENV_TO_REALWORLD_TIME_RATIO);
-        clock = new Thread(new clockThread(), "clock");
-        setPreferredSize(new Dimension(jPanelSize,jPanelSize));
-        setBackground(new Color(50, 50, 50));
+    Environment(Settings set){
+        this.set = set;
+        MAP_SIZE_METERS = set.MAP_SIZE_METERS;
+        METERS_PER_PIXEL = MAP_SIZE_METERS / set.EnvJPanelSize;
+        REAL_W_TIME_INCREMENT = set.REAL_W_TIME_INCREMENT;
+        ENV_TIME_INCREMENT = toInt(REAL_W_TIME_INCREMENT * set.ENV_TO_REALWORLD_TIME_RATIO);
+        setPreferredSize(new Dimension(set.EnvJPanelSize, set.EnvJPanelSize));
+        setBackground(new Color(Integer.decode("#6AE6B1")));
     }
 
     void start(){
         /*I put genAutom() here rather than the constructor because there was an issue where env's Graphics object was null until the env constuctor
          was completely finished. So calling Automaton's constructor caused nullpointer exc. because it uses that graphics obj.
         */
-        int itemsPerPainter = 2;
+        int itemsPerPainter = set.itemsPerPainter;
 
         //Generate Automatons and Painters
         automs = AutomatonGenerator.get(this);
@@ -72,6 +73,7 @@ public class Environment extends javax.swing.JPanel {
             t.start();
         }
         for(Painter painter :  painters) { painter.start();}
+        clock = new Thread(new clockThread(), "clock");
         clock.start();
     }
 

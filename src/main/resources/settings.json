@@ -1,0 +1,11 @@
+{
+
+
+  "EnvJPanelSize" : 700,
+  "MAP_SIZE_METERS" : 50.0,
+  "REAL_W_TIME_INCREMENT" : 5,
+  "ENV_TO_REALWORLD_TIME_RATIO" : 1.0,
+  "numAutomatons" : 1,
+  "backgroundColor" : "#6AE6B1",
+  "itemsPerPainter" : 2
+}
