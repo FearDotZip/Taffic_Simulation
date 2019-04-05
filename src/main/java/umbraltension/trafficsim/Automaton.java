@@ -1,23 +1,21 @@
 package umbraltension.trafficsim;
 
-import java.util.HashMap;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 
-import static umbraltension.trafficsim.devtools.toInt;
-import static java.lang.Math.pow;
 import static java.lang.Math.hypot;
+import static java.lang.Math.pow;
+import static umbraltension.trafficsim.devtools.toInt;
 
 public class Automaton extends Thing{
     private String name;
-    private Environment env;
     private String report;
-    private double xf, yf, distToDestination, initialDistance;
+    public double xf, yf, distToDestination, initialDistance;
 
     Automaton(String name, double x0, double y0, double xf, double yf, double width,
-              double height, double velocity, double theta, double accel, double accelTheta, Environment env) {
+              double height, double velocity, double theta, double accel, double accelTheta) {
         super(x0,y0,width,height,velocity,theta,accel,accelTheta);
         this.name = name;
-        this.env = env;
         this.xf = xf;
         this.yf = yf;
         this.initialDistance = hypot(xf-x, yf-y);
@@ -36,11 +34,11 @@ public class Automaton extends Thing{
     void brain(){
         int brainIterations = 0;
         while(!atDestination()) {
-            env.sleep(60);
+            Environment.sleep(60);
             if (brainIterations % 20 == 0) {
                 trajectory = getTrajectory(3000);
             }
-            var point = trajectory.get(env.getEnvTime());
+            var point = trajectory.get(Environment.getEnvTime());
             x = point.x;
             y = point.y;
             brainIterations++;
@@ -59,8 +57,8 @@ public class Automaton extends Thing{
         HashMap<Long, Point2D.Double> newTrajectory = new HashMap<>();
 
 
-        double time = env.getEnvTime() / 1000.0;
-        double increment = env.getENV_TIME_INCREMENT() / 1000.0;
+        double time = Environment.getEnvTime() / 1000.0;
+        double increment = Environment.getENV_TIME_INCREMENT() / 1000.0;
         for(double t = time; t <= time + timeSpanSeconds / 1000.0; t += increment){
             double newx = x0 + (vx * t) + (.5 * ax * pow(t,2));
             double newy = y0 + (vy * t) + (.5 * ay * pow(t,2));
@@ -71,7 +69,6 @@ public class Automaton extends Thing{
 
 /////MEMBER_GETTERS////////////////////////////////////////////////////////////////////////////////////////////////////
     public String getName()             { return name; }
-    public Environment getEnv()         { return env; }
     public double getXf()               { return xf; }
     public double getYf()               { return yf; }
     public double getDistToDestination(){ return distToDestination; }

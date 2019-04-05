@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="anchorPane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="500" prefWidth="1000" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umbraltension.trafficsim.PaneController">
+    <children>
+        <HBox id="hbox" alignment="CENTER" spacing="5" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <children>
+                <Pane fx:id="pane" minHeight="700.0" minWidth="700.0" style="-fx-background-color: #6AE6B1; -fx-border-width: 2; -fx-border-color: #AAAAAA; -fx-border-radius: 5;">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Pane>
+
+                      <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label alignment="CENTER" focusTraversable="false" prefHeight="102.0" prefWidth="222.0" text="Traffic Simulation" textAlignment="CENTER" textFill="#b1f2d4" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets bottom="30.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <MenuButton fx:id="presetsMenu" mnemonicParsing="false" style="-fx-background-color: #DDDDDD;" text="Presets" textFill="#404040">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                  </MenuButton>
+                  <Label text="Automatons" textFill="#404040">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="numAutomatons" />
+                  <Label text="Humans" textFill="#404040">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="numHumans" />
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <Button fx:id="runButton" mnemonicParsing="false" style="-fx-background-color: #DDDDDD;" text="Run Simulation" textFill="#404040">
+                     <VBox.margin>
+                        <Insets top="50.0" />
+                     </VBox.margin></Button>
+                    </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="10.0" />
+               </padding>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+
+
+
+</AnchorPane>
