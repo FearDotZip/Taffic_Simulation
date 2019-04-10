@@ -13,8 +13,8 @@ public class AutomatonGenerator {
 
     static HashMap<String, Automaton> get(int num){
         int sizeRange = 7; // range (0-7) of feet to add to base automaton size of 10 feet.
-        int xmax = (int)Environment.MAP_SIZE_METERS;
-        int ymax = (int)Environment.MAP_SIZE_METERS;
+        int xmax = (int)Environment.mapSizeMeters;
+        int ymax = (int)Environment.mapSizeMeters;
         HashMap<String, Automaton> automs = new HashMap<>();
 
 
@@ -53,7 +53,7 @@ public class AutomatonGenerator {
         HashMap<String, Automaton> automs = new HashMap<>();
 
         // moves right, down
-        automs.put("A_0", new Automaton("A_0",10,10,400,100,2.5,2.5, 5, toRadians(45),0, 0));
+        automs.put("A_0", new Automaton("A_0",10,10,400,100,15,15, 40, toRadians(45),0, 0));
 //        // right, up
 //        automs.put("A_1", new Automaton("A_1",10,500,400,200,2.5,2.5,5, toRadians(315),0, 0));
 //        // left, down

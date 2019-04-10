@@ -3,14 +3,16 @@ package umbraltension.trafficsim;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 
-import static java.lang.Math.hypot;
-import static java.lang.Math.pow;
-import static umbraltension.trafficsim.devtools.toInt;
+import static java.lang.Math.*;
+import static java.lang.Math.sin;
+import static umbraltension.trafficsim.tools.sleep;
+import static umbraltension.trafficsim.tools.toInt;
 
 public class Automaton extends Thing{
     private String name;
     private String report;
     public double xf, yf, distToDestination, initialDistance;
+    private HashMap<Long, Point2D.Double> newTrajectory = new HashMap<>();
 
     Automaton(String name, double x0, double y0, double xf, double yf, double width,
               double height, double velocity, double theta, double accel, double accelTheta) {
@@ -22,10 +24,7 @@ public class Automaton extends Thing{
         this.distToDestination = initialDistance;
     }
 
-    /* todo JESUS FUCKING CHRIST YOU FORGOT ABOUT THE LINE METHOD OF MOVING THE AUTOMS TO THEIR TARGET. DRAW LINE A
-        FROM co.bounds TO TARGET, ONLY MOVE TO POINTS ON THAT LINE. HAS THE DISADVANTAGE OF NOT BEING THE WAY A
-        PERSONAL (OR MACHINE?) WOULD CALCULATE IT"S NEXT STEPS
-    */
+
     public void run(){
         brain();
     }
@@ -34,11 +33,13 @@ public class Automaton extends Thing{
     void brain(){
         int brainIterations = 0;
         while(!atDestination()) {
-            Environment.sleep(60);
+            if(!Environment.running)
+                return;
+            sleep(60);
             if (brainIterations % 20 == 0) {
                 trajectory = getTrajectory(3000);
             }
-            var point = trajectory.get(Environment.getEnvTime());
+            var point = trajectory.get(Environment.envTime);
             x = point.x;
             y = point.y;
             brainIterations++;
@@ -54,17 +55,24 @@ public class Automaton extends Thing{
 
     @Override
     public HashMap<Long, Point2D.Double> getTrajectory(double timeSpanSeconds) {
-        HashMap<Long, Point2D.Double> newTrajectory = new HashMap<>();
-
-
-        double time = Environment.getEnvTime() / 1000.0;
-        double increment = Environment.getENV_TIME_INCREMENT() / 1000.0;
+        newTrajectory.clear();
+        orient();
+        double time = Environment.envTime / 1000.0;
+        double increment = Environment.envTimeIncrement / 1000.0;
         for(double t = time; t <= time + timeSpanSeconds / 1000.0; t += increment){
             double newx = x0 + (vx * t) + (.5 * ax * pow(t,2));
             double newy = y0 + (vy * t) + (.5 * ay * pow(t,2));
             newTrajectory.put(Long.valueOf(toInt(t*1000)), new Point2D.Double(newx, newy));
         }
         return newTrajectory;
+    }
+
+    private void orient(){
+        double thetaToTarget =  Math.atan2((yf - y), (xf - x));
+        vx = velocity * cos(thetaToTarget);
+        vy = velocity * sin(thetaToTarget);
+        ax = accel * cos(accelTheta);
+        ay = accel * sin(accelTheta);
     }
 
 /////MEMBER_GETTERS////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +87,8 @@ public class Automaton extends Thing{
     public String toString() {
         return "\nAutomaton{" +
                 "\n\tname = " + name +
+                "\n\tx0 = " + x0 +
+                "\n\ty0 = " + y0 +
                 "\n\txf = " + xf +
                 "\n\tyf = " + yf +
                 "\n\tvelocity= " + velocity +
