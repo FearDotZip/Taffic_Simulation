@@ -1,68 +1,105 @@
 package umbraltension.trafficsim;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.*;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 
-public class PaneController {
-    @FXML
-    Pane pane;
+import static javafx.animation.Animation.INDEFINITE;
 
+public class PaneController {
+
+    Pane pane;
+    Bounds paneBounds;
     private ArrayList<item> items = new ArrayList<>();
+    private Timeline paneTimelime;
+    private double pxPerMeter;
+    MainFXController main;
 
     class item {
         public Automaton automaton;
-        public Circle c;
-        item(Automaton a, Circle c){
-            this.automaton= a;
-            this.c = c;
+        public Circle target;
+        public Rectangle shape;
+        item(Automaton a){
+            automaton= a;
+            shape = new Rectangle(mToPx(a.width), mToPx(a.height));
+            shape.setTranslateX(mToPx(a.x));
+            shape.setTranslateY(mToPx(a.y));
+            shape.setFill(Color.BLACK);
+            target = new Circle(mToPx(a.xf), mToPx(a.yf), 3, Color.RED);
+            System.out.println(a);
         }
     }
 
-    ArrayList<item> getItems(){
-        ArrayList<item> items = new ArrayList<>();
-        for(Automaton autom : Environment.automs.values()){
-            items.add(new item(autom, new Circle(autom.x0, autom.y0, 5, Color.BLUE)));
+    public PaneController(MainFXController main, Pane pane){
+        this.main = main;
+        this.pane = pane;
+        init();
+    }
+
+    public void init(){
+        paneBounds = pane.getLayoutBounds();
+        pxPerMeter = Double.parseDouble(main.getMenuController().getSizeRatio().getText());
+
+        pane.getChildren().clear();
+        getItems();
+        pane.getChildren().add(buildRuler());
+
+        paneTimelime = new Timeline(new KeyFrame(Duration.millis(30), new myAnimator()));
+        paneTimelime.setCycleCount(INDEFINITE);
+    }
+    private void getItems(){
+        items.clear();
+        Environment.automs.values().forEach(autom -> items.add(new item(autom)));
+        for (item i : items){
+            pane.getChildren().add(i.shape);
+            pane.getChildren().add(i.target);
         }
-        return items;
     }
 
+    private Path buildRuler(){
+        MoveTo origin = new MoveTo(0,0);
+        double xMax = paneBounds.getMaxX();
+        double yMax = paneBounds.getMaxY();
+        double tenm = mToPx(10);
+        Path ruler = new Path(origin, new LineTo(xMax,0),
+                origin, new LineTo(0, yMax));
 
-    ArrayList<KeyValue> getKVS(){
-        ArrayList<KeyValue> kvs = new ArrayList<>();
-        for(item i : items){
-            KeyValue kv1 = new KeyValue(i.c.centerXProperty(), i.automaton.xf);
-            KeyValue kv2 = new KeyValue(i.c.centerYProperty(), i.automaton.yf);
-            kvs.add(kv1);
-            kvs.add(kv2);
+        for(double i = tenm; i<=xMax; i+=tenm){
+            ruler.getElements().addAll(new MoveTo(i,0), new LineTo(i, 10));
         }
-        return kvs;
+        for(double i = tenm; i<=yMax; i+=tenm) {
+            ruler.getElements().addAll(new MoveTo(0,i), new LineTo(10, i));
+        }
+
+        return ruler;
     }
 
-
-    @FXML
-    public void initialize() {
-        items = getItems();
-        items.forEach((item n) -> pane.getChildren().add(n.c));
-
-        EventHandler<ActionEvent> eh = new EventHandler<ActionEvent>(){ public void handle(ActionEvent event){
-            System.out.println("done");
-        }};
-
-        KeyFrame kf = new KeyFrame(Duration.seconds(10), "ball movements", eh, getKVS());
-        Timeline timeline = new Timeline(kf);
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+    private double mToPx(double meters){
+        return meters * pxPerMeter;
     }
 
+    class myAnimator implements EventHandler<ActionEvent>{
+        @Override
+        public void handle(ActionEvent event){
+            for (item i : items){
+                i.shape.setTranslateX(mToPx(i.automaton.x));
+                i.shape.setTranslateY(mToPx(i.automaton.y));
+            }
+        }
+    }
+
+    public void play(){
+        paneTimelime.play();
+    }
+    public Timeline getPaneTimelime(){return paneTimelime;};
 
 }
+

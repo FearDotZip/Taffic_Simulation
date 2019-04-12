@@ -1,91 +1,73 @@
 package umbraltension.trafficsim;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import static umbraltension.trafficsim.devtools.toInt;
-public class Environment extends javax.swing.JPanel {
+import static umbraltension.trafficsim.tools.sleep;
+import static umbraltension.trafficsim.tools.toInt;
+
+public class Environment{
 	// Time
-        public static int REAL_W_TIME_INCREMENT; // (real-world update period given in milliseconds)
-        public static int ENV_TIME_INCREMENT; // (milliseconds)
-        public static long envTime = 0; // (milliseconds since env's clock thread started creation)
+        public static int realWorldUpdatePeriod = 5; // (real-world update period given in milliseconds)
+        public static int envTimeIncrement; // (milliseconds)
+        public static long envTime; // (milliseconds since env's clock thread started creation)
         private static Thread clock;
     // Space
-        public static double MAP_SIZE_METERS, METERS_PER_PIXEL;
+        public static double mapSizeMeters, metersPerPixel;
+
+    public static int numAutoms;
     public static HashMap<String,Automaton> automs = new HashMap<>();
+    public static boolean running = false;
     public static ThreadGroup automThreads = new ThreadGroup("Automaton Threads");
 
 
-    public static void init(Settings set){
-        Environment.MAP_SIZE_METERS = set.MAP_SIZE_METERS;
-        METERS_PER_PIXEL = MAP_SIZE_METERS / set.EnvJPanelSize;
-        REAL_W_TIME_INCREMENT = set.REAL_W_TIME_INCREMENT;
-        ENV_TIME_INCREMENT = toInt(REAL_W_TIME_INCREMENT * set.ENV_TO_REALWORLD_TIME_RATIO);
-        //Generate Automatons
-        automs = AutomatonGenerator.get(300);
+    public static void init(MainFXController main){
+        mapSizeMeters = Double.parseDouble(main.mapSize.getText());
+        envTime = 0;
+        envTimeIncrement = toInt(realWorldUpdatePeriod * Double.parseDouble(main.timeRatio.getText()));
+        numAutoms = Integer.parseInt(main.numAutoms.getText());
+        automs = AutomatonFactory.get(numAutoms);
     }
 
+    //make and start threads
     static void start(){
-        //make and start threads
         clock = new Thread(new Runnable() {
             public void run() {
                 while(true){
-                    sleep(REAL_W_TIME_INCREMENT);  // this much realworld time has passed so...
-                    envTime += ENV_TIME_INCREMENT; //this much env time has passed.
+                    if(!running)
+                        return;
+                    sleep(realWorldUpdatePeriod);  // this much realworld time has passed so...
+                    envTime += envTimeIncrement; //this much env time has passed.
                 }
             }
         }, "clock");
-        clock.start();
+        ArrayList<Thread> athreads = new ArrayList<>();
+        automs.forEach((name, autom)-> athreads.add(new Thread(automThreads,autom, name)));
 
-        //automs.values().forEach((Automaton n)-> new Thread(automThreads,n,n.getName()));
-        for(Automaton autom : automs.values()){
-            Thread t = new Thread(automThreads, autom, autom.getName());
-        }
-        Thread[] threads = new Thread[automs.size()];
-        automThreads.enumerate(threads);
+        running = true;
+        athreads.forEach(Thread::start);
         clock.start();
-        for(Thread t : threads){
-            t.start();
-        }
-
     }
 
-
+    static void stop(){
+        running = false;
+    }
 
     //Foot to pixel conversion
     static double metersToPixels(double meters){
-        return (meters * (1.0 / METERS_PER_PIXEL));
-    }
-
-    //pause for a given number of milliseconds
-    static void sleep(int milliseconds){
-        try { Thread.sleep(milliseconds);}
-        catch (InterruptedException i){System.out.println("Aut sleep call interrupted");}
+        return (meters * (1.0 / metersPerPixel));
     }
 
 
-    static double getMAP_SIZE_METERS() {
-        return MAP_SIZE_METERS;
-    }
 
-    static double getMETERS_PER_PIXEL() {
-        return METERS_PER_PIXEL;
-    }
-
-    static int getREAL_W_TIME_INCREMENT() {
-        return REAL_W_TIME_INCREMENT;
-    }
-
-    static int getENV_TIME_INCREMENT() { return ENV_TIME_INCREMENT; }
-
-    static long getEnvTime() { return envTime; }
 
     public static String summary() {
         return "\nEnvironment{" +
-                "\n\tMAP_SIZE_METERS=" + MAP_SIZE_METERS +
-                "\n\tREAL_W_TIME_INCREMENT=" + REAL_W_TIME_INCREMENT +
-                "\n\tENV_TIME_INCREMENT=" + ENV_TIME_INCREMENT +
+                "\n\tmapSizeMeters=" + mapSizeMeters +
+                "\n\trealWorldUpdatePeriod=" + realWorldUpdatePeriod +
+                "\n\tenvTimeIncrement=" + envTimeIncrement +
                 "\n\tenvTime=" + envTime +
-                "\n\t1 pixel = " + METERS_PER_PIXEL + " meters" +
+                "\n\t1 pixel = " + metersPerPixel + " meters" +
                 "\n}\n";
     }
 

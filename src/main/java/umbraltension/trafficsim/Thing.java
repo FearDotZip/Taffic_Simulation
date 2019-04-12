@@ -1,12 +1,9 @@
 package umbraltension.trafficsim;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.pow;
-
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import static java.lang.Math.*;
 
 public class Thing implements Runnable {
     public String name = "a thing";
@@ -18,15 +15,12 @@ public class Thing implements Runnable {
 
     public Thing(){}
 
-    public Thing(double x0, double y0, double width, double height, double velocity, double theta, double accel, double accelTheta) {
+    public Thing(double x0, double y0, double width, double height, double velocity, double accel, double accelTheta) {
         this.width = width;             this.height = height;
         this.halfWidth = width / 2.0;   this.halfHeight = height / 2.0;
         this.x0 = x0;   this.x = x0;
         this.y0 = y0;   this.y = y0;
         this.velocity = velocity;
-        this.theta = theta;
-        vx = velocity * cos(theta);
-        vy = velocity * sin(theta);
         this.accel = accel;
         ax = accel * cos(accelTheta);
         ay = accel * sin(accelTheta);

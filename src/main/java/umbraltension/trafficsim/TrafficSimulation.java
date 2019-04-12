@@ -1,10 +1,9 @@
 package umbraltension.trafficsim;
 
-import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -13,39 +12,31 @@ import java.nio.file.Path;
 
 public class TrafficSimulation extends Application {
 
-    public static Settings set;
     @Override
-    public void start(Stage mainStage) throws Exception{ //
-        getSettings();
-        Environment.init(set);
-        //Environment.start();
+    public void start(Stage mainStage){
+        MainFXController mainController;
+        HBox root;
+        try {
+            URL location = new URL("file", "localhost", "C:/Users/jeremy/Desktop/Traffic_Simulation/src/main/resources/fxml/windowfxml.fxml");//getClass().getClassLoader().getResource("src/main/resources/fxml/windowfxml.fxml");
+            FXMLLoader fxLoader = new FXMLLoader(location);
+            root = fxLoader.load();
+            root.layout();
+            mainController = fxLoader.getController();
+            //1. currently necessary to do in this order
+            Environment.init(mainController);
+            //2.
+            mainController.initializeControllers();
 
-        URL location = getClass().getClassLoader().getResource("src/main/resources/fxml/windowfxml.fxml");
-        FXMLLoader fxLoader = new FXMLLoader(location);
+            mainStage.setTitle("Traffic Simulation");
+            mainStage.setScene(new Scene(root));
+        } catch(IOException e){
+            e.printStackTrace();
+            System.out.println("\n\n The FXML loading failed.");
+            System.exit(-1);
+        }
 
-        AnchorPane anchorPane = (AnchorPane) fxLoader.load();
-        Scene scene = new Scene(anchorPane);
-
-        mainStage.setTitle("Traffic Simulation");
-        mainStage.setScene(scene);
         mainStage.show();
     }
-
-    private void getSettings() {
-        Gson gson = new Gson();
-        String json = "";
-        try {
-            json = java.nio.file.Files.readString(Path.of("src/main/resources/settings.json"));
-            TrafficSimulation.set = gson.fromJson(json, Settings.class);
-        }catch (IOException e){
-            System.out.println("Default settings used because settings file was not found.");
-            TrafficSimulation.set  = new Settings();
-        }
-    }
-
-
-    public static void main(String[] args){
-        launch();
-    }
+    public static void main(String[] args){ launch(); }
 
 }
