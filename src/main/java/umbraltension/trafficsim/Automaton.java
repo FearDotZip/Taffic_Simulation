@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 
 import static java.lang.Math.*;
-import static java.lang.Math.sin;
 import static umbraltension.trafficsim.tools.sleep;
 import static umbraltension.trafficsim.tools.toInt;
 
@@ -15,8 +14,8 @@ public class Automaton extends Thing{
     private HashMap<Long, Point2D.Double> newTrajectory = new HashMap<>();
 
     Automaton(String name, double x0, double y0, double xf, double yf, double width,
-              double height, double velocity, double theta, double accel, double accelTheta) {
-        super(x0,y0,width,height,velocity,theta,accel,accelTheta);
+              double height, double velocity, double accel, double accelTheta) {
+        super(x0,y0,width,height,velocity,accel,accelTheta);
         this.name = name;
         this.xf = xf;
         this.yf = yf;

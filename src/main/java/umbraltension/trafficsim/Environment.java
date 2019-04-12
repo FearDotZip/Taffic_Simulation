@@ -3,7 +3,8 @@ package umbraltension.trafficsim;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static umbraltension.trafficsim.tools.*;
+import static umbraltension.trafficsim.tools.sleep;
+import static umbraltension.trafficsim.tools.toInt;
 
 public class Environment{
 	// Time
@@ -25,7 +26,7 @@ public class Environment{
         envTime = 0;
         envTimeIncrement = toInt(realWorldUpdatePeriod * Double.parseDouble(main.timeRatio.getText()));
         numAutoms = Integer.parseInt(main.numAutoms.getText());
-        automs = AutomatonGenerator.get();
+        automs = AutomatonFactory.get(numAutoms);
     }
 
     //make and start threads

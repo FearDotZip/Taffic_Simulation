@@ -1,10 +1,12 @@
 package umbraltension.trafficsim;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.fxml.Initializable;
+
 
 public class MainFXController implements Initializable {
 
@@ -14,7 +16,9 @@ public class MainFXController implements Initializable {
     @FXML
     Button runButton, resetButton, applyButton;
     @FXML
-    TextField numAutoms, mapSize, timeRatio;
+    TextField numAutoms, mapSize, sizeRatio, timeRatio;
+    @FXML
+    Label clock;
 
 
     public PaneController paneController;
@@ -34,31 +38,38 @@ public class MainFXController implements Initializable {
 
     public void run(){
         Environment.start();
-        paneController.getTimeline().play();
+        paneController.play();
+        menuController.play();
     }
+
     public void stop(){
         Environment.stop();
     }
+
     public void reset(){
         Environment.stop();
         Environment.init(this);
         paneController.init();
     }
+
     public void applySettings(){
         reset();
     }
 
     public void initializeControllers(){
+        Label[] labels = {clock};
+        Button[] buttons = {applyButton, resetButton, runButton}; //keep these lists alphabetized;
+        TextField[] textFields = {mapSize, numAutoms, sizeRatio, timeRatio};
+        menuController = new MenuController(this, textFields, buttons, labels);
         paneController = new PaneController(this, pane);
-        menuController = new MenuController(this, runButton, resetButton, applyButton,
-                numAutoms);
     }
 
-    public Pane getPane() {
-        return pane;
+    public PaneController getPaneController() {
+        return paneController;
     }
 
-    public Button getRunButton() {
-        return runButton;
+    public MenuController getMenuController() {
+        return menuController;
     }
+
 }
